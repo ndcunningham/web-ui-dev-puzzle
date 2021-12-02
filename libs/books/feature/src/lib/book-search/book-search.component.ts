@@ -9,13 +9,14 @@ import {
 import { FormBuilder } from '@angular/forms';
 import { Book } from '@tmo/shared/models';
 import { Observable } from 'rxjs';
+import { debounce, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'tmo-book-search',
   templateUrl: './book-search.component.html',
   styleUrls: ['./book-search.component.scss']
 })
-export class BookSearchComponent {
+export class BookSearchComponent implements OnInit {
   books$ = this.store.select(getAllBooks);
 
   searchForm = this.fb.group({
@@ -27,6 +28,19 @@ export class BookSearchComponent {
     private readonly fb: FormBuilder
   ) { }
 
+  ngOnInit() {
+    this.searchForm.valueChanges.pipe(
+      debounceTime(500), 
+      distinctUntilChanged()
+    ).subscribe(term => {
+      if(term) {
+      this.store.dispatch(searchBooks({ term }))
+      } else {
+        this.store.dispatch(clearSearch());
+      }
+    })
+  }
+
   get searchTerm(): string {
     return this.searchForm.value.term;
   }
@@ -37,14 +51,5 @@ export class BookSearchComponent {
 
   searchExample() {
     this.searchForm.controls.term.setValue('javascript');
-    this.searchBooks();
-  }
-
-  searchBooks() {
-    if (this.searchForm.value.term) {
-      this.store.dispatch(searchBooks({ term: this.searchTerm }));
-    } else {
-      this.store.dispatch(clearSearch());
-    }
   }
 }
