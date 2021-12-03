@@ -33,6 +33,7 @@
           <div>
             <button
               mat-flat-button
+              data-testing="want-to-read"
               [attr.aria-label]="'Add ' +  b.title + ' to Reading List'"
               color="primary"
               (click)="addBookToReadingList(b)"
