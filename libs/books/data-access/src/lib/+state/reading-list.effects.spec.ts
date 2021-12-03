@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ReplaySubject } from 'rxjs';
+import { of, ReplaySubject } from 'rxjs';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
@@ -7,11 +7,17 @@ import { HttpTestingController } from '@angular/common/http/testing';
 import { SharedTestingModule } from '@tmo/shared/testing';
 import { ReadingListEffects } from './reading-list.effects';
 import * as ReadingListActions from './reading-list.actions';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 describe('ToReadEffects', () => {
   let actions: ReplaySubject<any>;
   let effects: ReadingListEffects;
   let httpMock: HttpTestingController;
+  const mockSnackBar = {
+    open: () => {},
+    onAction: () => of({}),
+    onDissmissed: () => of({})
+  }
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -19,7 +25,8 @@ describe('ToReadEffects', () => {
       providers: [
         ReadingListEffects,
         provideMockActions(() => actions),
-        provideMockStore()
+        provideMockStore(),
+        { provide: MatSnackBar, useValue: mockSnackBar }
       ]
     });
 

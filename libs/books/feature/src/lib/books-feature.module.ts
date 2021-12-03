@@ -8,9 +8,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { TotalCountComponent } from './total-count/total-count.component';
 import { ReadingListComponent } from './reading-list/reading-list.component';
+
+const SHOW_SNACK_BAR_DURATION = 3000; // This is in milliseconds
 
 const EXPORTS = [
   BookSearchComponent,
@@ -33,7 +35,8 @@ const EXPORTS = [
     ]),
     BooksDataAccessModule
   ],
+  providers: [{ provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: SHOW_SNACK_BAR_DURATION } }],
   exports: [...EXPORTS],
   declarations: [...EXPORTS]
 })
-export class BooksFeatureModule {}
+export class BooksFeatureModule { }

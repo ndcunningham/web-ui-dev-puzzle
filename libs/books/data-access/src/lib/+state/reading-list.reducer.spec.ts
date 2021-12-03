@@ -51,6 +51,31 @@ describe('Books Reducer', () => {
 
       expect(result.ids).toEqual(['A', 'B']);
     });
+
+    it('undoAddToReadingList should undo adding a book to state', () => {
+
+      const action = ReadingListActions.addToReadingList({ book: { ...createReadingListItem('D'), id: 'D' } });
+      const result: State = reducer(initialState, action);
+
+      const undoAction = ReadingListActions.undoAddToReadingList();
+
+      const undoResult: State = reducer(result, undoAction);
+
+      expect(initialState.ids).toEqual(undoResult.ids);
+    });
+
+    it('undoAddToReadingList should undo removing a book from state', () => {
+      const action = ReadingListActions.removeFromReadingList({
+        item: createReadingListItem('C')
+      });
+
+      const result: State = reducer(state, action);
+
+      const undoAction = ReadingListActions.undoRemoveFromReadingList();
+      const undoResult: State = reducer(result, undoAction);
+
+      expect(state.ids).toEqual(undoResult.ids)
+    })
   });
 
   describe('unknown action', () => {

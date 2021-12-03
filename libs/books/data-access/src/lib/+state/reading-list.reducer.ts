@@ -9,6 +9,7 @@ export const READING_LIST_FEATURE_KEY = 'readingList';
 export interface State extends EntityState<ReadingListItem> {
   loaded: boolean;
   error: null | string;
+  prev?: State;
 }
 
 export interface ReadingListPartialState {
@@ -48,15 +49,20 @@ const readingListReducer = createReducer(
     };
   }),
   on(ReadingListActions.addToReadingList, (state, action) =>
-    readingListAdapter.addOne({ bookId: action.book.id, ...action.book }, state)
+    readingListAdapter.addOne({ bookId: action.book.id, ...action.book }, { ...state, prev: state })
   ),
   on(
     ReadingListActions.removeFromReadingList, (state, action) =>
-    readingListAdapter.removeOne(action.item.bookId, state)
+    readingListAdapter.removeOne(action.item.bookId, { ...state, prev: state })
   ),
   on(
     ReadingListActions.failedAddToReadingList, (state, action) =>
     readingListAdapter.removeOne(action.book.id, state)
+  ),
+  on(
+    ReadingListActions.undoRemoveFromReadingList,
+    ReadingListActions.undoAddToReadingList, (state, _) =>
+    ({ ...initialState, ...state.prev})
   )
 );
 
