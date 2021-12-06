@@ -19,6 +19,13 @@
     flex-direction: column;
     justify-content: center;
   }
+
+  &.finished {
+    .reading-list-item--details--title,
+    .reading-list-item--details--author {
+      color: green;
+    }
+  }
 }
 
 .reading-list-item--cover {
